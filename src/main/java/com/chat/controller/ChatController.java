@@ -1,5 +1,6 @@
 package com.chat.controller;
 
+import java.awt.List;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class ChatController {
 	}
 	
 	@GetMapping("allChat")
-	public ArrayList<Chat> getAllChat(){
+	public java.util.List<Chat> getAllChat(){
 		
 		return chatService.getAllChat();
 	}
