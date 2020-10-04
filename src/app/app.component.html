@@ -1,0 +1,8 @@
+<div class="container">
+	<div *ngFor="let chat of list">
+		<p><span>{{chat.time}}</span> {{chat.name}}: <b>{{chat.message}}</b></p>
+	
+	</div>
+	<input type="text" #message>
+	<button class="btn btn-primary" (click)="newMessage()">Send</button>
+</div>
