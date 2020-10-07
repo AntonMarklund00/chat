@@ -13,6 +13,7 @@ export class AppComponent {
   title = 'chat-angular';
   list: any;
   @ViewChild("message") message: ElementRef;
+  @ViewChild("name") name: ElementRef;
 
 
   constructor(private http: HttpClient, public webSocketService: WebSocketService) {
@@ -21,7 +22,7 @@ export class AppComponent {
 
   getAllchat(){
 
-    this.http.get('allChat').subscribe(data => this.list = data);
+    this.http.get('get/start').subscribe(data => this.list = data);
   }
 
   ngOnInit() {
@@ -32,11 +33,10 @@ export class AppComponent {
   }
   newMessage(){
 
-    const chatMessageDto = new ChatMessageDto("Anton", this.message.nativeElement.value);
+    const chatMessageDto = new ChatMessageDto(this.name.nativeElement.value, this.message.nativeElement.value);
     this.webSocketService.sendMessage(chatMessageDto);
-    /*let url = "/post/" + this.message.nativeElement.value;
+    let url = "/post/" + this.name.nativeElement.value + "/" + this.message.nativeElement.value;
     this.http.post(url, {}).subscribe();
-    this.getAllchat();*/
   }
 
 }

@@ -32,7 +32,7 @@ public class ChatService {
 	/*
 	 * Post message
 	 */
-	public boolean post(String message) {
+	public boolean post(String name, String message) {
 		Chat latestId = chatRepository.findTopByOrderByIdDesc();
 		if(latestId != null) {
 			id = latestId.getId()+1;
@@ -43,7 +43,7 @@ public class ChatService {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date date = new Date();
 
-		Chat chat = new Chat(id, "Anton", message, formatter.format(date));
+		Chat chat = new Chat(id, name, message, formatter.format(date));
 
 		if(chatRepository.save(chat) != null) {
 			//return true;
@@ -56,16 +56,19 @@ public class ChatService {
 	 * Get 5 latest chats
 	 */
 	public List<Chat> getFiveLatestChat(){
-
-		Pageable pageable = PageRequest.of(0, 6, Sort.by(Order.desc("id")));
+		Pageable pageable = PageRequest.of(0, 5, Sort.by(Order.desc("id")));
 
 		//last 5 chats
 		Page<Chat> allChatPage = chatRepository.findAll(pageable);
 		List<Chat> allChatArray = allChatPage.getContent();
-
+    System.out.println(allChatArray.size());
 		ArrayList<Chat> chats = new ArrayList<>();
-		for(int i = 0; i < allChatArray.size()-1; i++){
-      chats.add(allChatArray.get(i));
+		if(allChatArray.size() > 1){
+      for(int i = 0; i < allChatArray.size(); i++){
+        chats.add(allChatArray.get(i));
+      }
+    }else{
+		  chats.add(allChatArray.get(0));
     }
 
 		Collections.reverse(chats);

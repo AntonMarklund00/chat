@@ -1,5 +1,9 @@
 package com.chat.config;
 
+import com.chat.controller.ChatController;
+import com.chat.dao.Chat;
+import org.apache.logging.log4j.message.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -10,6 +14,8 @@ import java.util.List;
 
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
+  @Autowired
+  ChatController chatController;
 
   private final List<WebSocketSession> webSocketSessions = new ArrayList<>();
 
