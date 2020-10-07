@@ -1,26 +1,17 @@
 package com.chat.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.chat.dao.Chat;
+import org.springframework.http.HttpOutputMessage;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.HtmlUtils;
 
-import com.chat.service.UserService;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 @RestController
 public class UserController {
-	
-	
-	@Autowired
-	UserService userService;
-	
-	@GetMapping("hello")
-	public String hello() {
-		
-		return userService.hello();
-		
-	}
-	
-	
-	
 
 }

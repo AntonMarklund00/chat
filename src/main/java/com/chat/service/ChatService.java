@@ -12,29 +12,28 @@ import com.chat.dao.Chat;
 import com.chat.repository.ChatRepository;
 
 import java.text.SimpleDateFormat;
-import java.util.*;  
+import java.util.*;
 
 
-import javax.servlet.http.HttpSession;    
+import javax.servlet.http.HttpSession;
 
 @Service
 public class ChatService {
-	
-	
+
+
 	@Autowired
 	ChatRepository chatRepository;
 
 	@Autowired
 	HttpSession session;
-	
+
 	int id;
-	
+
 	public void session(int id) {
-		
 		session.setAttribute("latestID", id);
-		
+
 	}
-	
+
 	/*
 	 * Post message
 	 */
@@ -45,55 +44,61 @@ public class ChatService {
 		}else {
 		 id = 0;
 		}
-		
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
-	    Date date = new Date();  
-	    
-	    
+
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date date = new Date();
+
 		Chat chat = new Chat(id, "Anton", message, formatter.format(date));
-		
+
 		if(chatRepository.save(chat) != null) {
 			//return true;
 		}
-		
 		return false;
 	}
-	
-	
+
+
 	/*
-	 * Get latest chats
+	 * Get 5 latest chats
 	 */
-	
-	
-	
-	public List<Chat> getAllChat(){
-		//get last chat
-		
-		Pageable pageable = PageRequest.of(0, 5, Sort.by(Order.asc("id")));
-		
+	public List<Chat> getFiveLatestChat(){
+
+		Pageable pageable = PageRequest.of(0, 6, Sort.by(Order.desc("id")));
+
 		//last 5 chats
 		Page<Chat> allChatPage = chatRepository.findAll(pageable);
 		List<Chat> allChatArray = allChatPage.getContent();
 
-		
-		//Add last id to session
-		Chat lastChat = allChatArray.get(allChatArray.size()-1);
+		ArrayList<Chat> chats = new ArrayList<>();
+		for(int i = 0; i < allChatArray.size()-1; i++){
+      chats.add(allChatArray.get(i));
+    }
+
+		Collections.reverse(chats);
+
+		Chat lastChat = chats.get(chats.size()-1);
 		session(lastChat.getId());
-		
-		return allChatArray;
+		return chats;
 	}
-	
+
+  public List<Chat> getAllChat(){
+
+    //last 5 chats
+    List<Chat> allChatPage = chatRepository.findAll();
+
+    return allChatPage;
+  }
+
 	public ArrayList<Chat> getLatestChat(){
 		if(session.getAttribute("latestID") == null) {
 			return null;
 		}
-		
+
 		ArrayList<Chat> latest = chatRepository.findByIdGreaterThan((int) session.getAttribute("latestID"));
-		
+
 		Chat lastChat = latest.get(latest.size());
 		session(lastChat.getId());
-		
+
 		return latest;
 	}
-	
+
 }
