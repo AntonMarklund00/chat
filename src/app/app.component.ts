@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {WebSocketService} from "./web-socket.service";
+import {ChatMessageDto} from "./chatMessageDto";
 
 @Component({
   selector: 'app-root',
@@ -30,9 +31,12 @@ export class AppComponent {
     this.webSocketService.closeWebSocket();
   }
   newMessage(){
-    let url = "/post/" + this.message.nativeElement.value;
+
+    const chatMessageDto = new ChatMessageDto("Anton", this.message.nativeElement.value);
+    this.webSocketService.sendMessage(chatMessageDto);
+    /*let url = "/post/" + this.message.nativeElement.value;
     this.http.post(url, {}).subscribe();
-    this.getAllchat();
+    this.getAllchat();*/
   }
 
 }

@@ -29,11 +29,6 @@ public class ChatService {
 
 	int id;
 
-	public void session(int id) {
-		session.setAttribute("latestID", id);
-
-	}
-
 	/*
 	 * Post message
 	 */
@@ -74,9 +69,6 @@ public class ChatService {
     }
 
 		Collections.reverse(chats);
-
-		Chat lastChat = chats.get(chats.size()-1);
-		session(lastChat.getId());
 		return chats;
 	}
 
@@ -87,18 +79,5 @@ public class ChatService {
 
     return allChatPage;
   }
-
-	public ArrayList<Chat> getLatestChat(){
-		if(session.getAttribute("latestID") == null) {
-			return null;
-		}
-
-		ArrayList<Chat> latest = chatRepository.findByIdGreaterThan((int) session.getAttribute("latestID"));
-
-		Chat lastChat = latest.get(latest.size());
-		session(lastChat.getId());
-
-		return latest;
-	}
 
 }

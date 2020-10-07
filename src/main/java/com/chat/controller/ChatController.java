@@ -19,24 +19,15 @@ public class ChatController {
 	@Autowired
 	ChatService chatService;
 
-	@PostMapping("/post/{message}")
 	public Boolean post(@PathVariable String message) {
-
 		return chatService.post(message);
-
 	}
 
-	@GetMapping("allChat")
-	public java.util.List<Chat> getAllChat(){
+	@GetMapping("get/start")
+	public java.util.List<Chat> getFiveLatestChat(){
 		return chatService.getFiveLatestChat();
 
 	}
 
-
-	@GetMapping("getLatest")
-	public ArrayList<Chat> getLatest(){
-		return chatService.getLatestChat();
-
-	}
 
 }
