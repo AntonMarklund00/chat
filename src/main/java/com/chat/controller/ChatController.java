@@ -21,7 +21,6 @@ public class ChatController {
 
 	@PostMapping("/post/{name}/{message}")
 	public Boolean post(@PathVariable String name, @PathVariable String message) {
-	  System.out.println("1");
 		return chatService.post(name, message);
 	}
 

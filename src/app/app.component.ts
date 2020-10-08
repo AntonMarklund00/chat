@@ -11,32 +11,22 @@ import {ChatMessageDto} from "./chatMessageDto";
 })
 export class AppComponent {
   title = 'chat-angular';
-  list: any;
-  @ViewChild("message") message: ElementRef;
-  @ViewChild("name") name: ElementRef;
-
-
-  constructor(private http: HttpClient, public webSocketService: WebSocketService) {
-    this.getAllchat();
-  }
-
-  getAllchat(){
-
-    this.http.get('get/start').subscribe(data => this.list = data);
-  }
+  openChat: boolean = false;
+  username: string;
+  constructor(public webSocketService: WebSocketService) {}
 
   ngOnInit() {
+
     this.webSocketService.openWebSocket();
   }
   ngOnDestroy(){
     this.webSocketService.closeWebSocket();
+    this.openChat = false;
   }
-  newMessage(){
 
-    const chatMessageDto = new ChatMessageDto(this.name.nativeElement.value, this.message.nativeElement.value);
-    this.webSocketService.sendMessage(chatMessageDto);
-    let url = "/post/" + this.name.nativeElement.value + "/" + this.message.nativeElement.value;
-    this.http.post(url, {}).subscribe();
+  usernameSet(username: string){
+    this.username = username;
+    this.openChat = true;
   }
 
 }

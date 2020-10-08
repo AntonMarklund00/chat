@@ -61,7 +61,6 @@ public class ChatService {
 		//last 5 chats
 		Page<Chat> allChatPage = chatRepository.findAll(pageable);
 		List<Chat> allChatArray = allChatPage.getContent();
-    System.out.println(allChatArray.size());
 		ArrayList<Chat> chats = new ArrayList<>();
 		if(allChatArray.size() > 1){
       for(int i = 0; i < allChatArray.size(); i++){

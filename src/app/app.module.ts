@@ -4,10 +4,14 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ChatComponent } from './chat/chat.component';
+import { UserComponent } from './chat/user/user.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ChatComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
