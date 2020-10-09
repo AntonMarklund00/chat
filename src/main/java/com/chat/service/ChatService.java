@@ -7,6 +7,10 @@ import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 import com.slack.api.model.Message;
+import org.riversun.slacklet.Slacklet;
+import org.riversun.slacklet.SlackletRequest;
+import org.riversun.slacklet.SlackletResponse;
+import org.riversun.slacklet.SlackletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -98,7 +102,7 @@ public class ChatService {
 
     SlackConfig config = new SlackConfig();
     Slack slack = Slack.getInstance(config);
-    String token = "BOT_TOKEN";
+    String token = "TOKEN";
     MethodsClient methods = slack.methods(token);
     ChatPostMessageRequest request = ChatPostMessageRequest.builder()
       .channel("#chat")

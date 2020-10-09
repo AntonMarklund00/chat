@@ -28,6 +28,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
   protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
     for (WebSocketSession webSocketSession: webSocketSessions){
       webSocketSession.sendMessage(message);
+      System.out.println(message);
     }
   }
 
