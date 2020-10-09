@@ -1,8 +1,30 @@
-<div class="container">
+<!--<div class="container">
   <div>
     <p *ngFor="let startChatNessage of list"><span>{{startChatNessage.name}}</span> {{startChatNessage.message}}</p>
     <p *ngFor="let chatMessage of webSocketService.chatMessage"><span>{{chatMessage.user}}</span> {{chatMessage.message}}</p>
   </div>
   <input type="text" #message>
   <button class="btn btn-primary" (click)="newMessage()">Send</button>
+</div>-->
+
+<div class="chat_window">
+  <div class="top_menu">
+    <div class="buttons">
+
+    </div>
+    <div class="title">Chat</div>
+  </div>
+  <ul class="messages">
+    <div class="card" *ngFor="let startChatNessage of list"><div class="card-body"><strong>{{startChatNessage.name}}</strong>: {{startChatNessage.message}}</div></div>
+    <div class="card" *ngFor="let chatMessage of webSocketService.chatMessage"><div class="card-body"><strong>{{chatMessage.user}}</strong> {{chatMessage.message}}</div></div>
+  </ul>
+  <div class="bottom_wrapper clearfix">
+    <div class="message_input_wrapper">
+      <input class="message_input" placeholder="Type your message here..." #message/>
+    </div>
+    <div class="send_message">
+      <button (click)="newMessage()" class="btn btn-success btn-lg">Send</button>
+    </div>
+  </div>
 </div>
+

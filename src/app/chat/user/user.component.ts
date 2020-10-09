@@ -9,15 +9,15 @@ export class UserComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   @ViewChild("username") username: ElementRef;
   @Output() usernameSet = new EventEmitter<string>();
 
   setUsername(){
-    this.usernameSet.emit(this.username.nativeElement.value);
-
+    if(this.username.nativeElement.value != "" || null || undefined){
+      this.usernameSet.emit(this.username.nativeElement.value);
+    }
   }
 
 }

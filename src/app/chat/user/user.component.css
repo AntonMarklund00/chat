@@ -1,12 +1,16 @@
-.center {
+.background{
   margin: auto;
-  width: 50%;
+  height: 50%;
+  width: 100%;
   padding: 10px;
 }
 
 .center-c {
   margin: auto;
-  margin-top: 30%;
+  margin-top: 20%;
+  height: 50%;
   width: 50%;
   padding: 10px;
 }
+
+

@@ -28,6 +28,7 @@ export class ChatComponent implements OnInit {
     this.webSocketService.sendMessage(chatMessageDto);
     let url = "/post/" + this.username + "/" + this.message.nativeElement.value;
     this.http.post(url, {}).subscribe();
+    this.message.nativeElement.value = "";
   }
 
 }
