@@ -1,5 +1,12 @@
 package com.chat.service;
 
+import com.slack.api.Slack;
+import com.slack.api.SlackConfig;
+import com.slack.api.methods.MethodsClient;
+import com.slack.api.methods.SlackApiException;
+import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+import com.slack.api.methods.response.chat.ChatPostMessageResponse;
+import com.slack.api.model.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.chat.dao.Chat;
 import com.chat.repository.ChatRepository;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -45,12 +53,14 @@ public class ChatService {
 
 		Chat chat = new Chat(id, name, message, formatter.format(date));
 
+    slack(name, message);
 		if(chatRepository.save(chat) != null) {
-			//return true;
+			return true;
 		}
+
+
 		return false;
 	}
-
 
 	/*
 	 * Get 5 latest chats
@@ -80,6 +90,29 @@ public class ChatService {
     List<Chat> allChatPage = chatRepository.findAll();
 
     return allChatPage;
+  }
+
+
+
+  public void slack(String name, String message){
+
+    SlackConfig config = new SlackConfig();
+    Slack slack = Slack.getInstance(config);
+    String token = "BOT_TOKEN";
+    MethodsClient methods = slack.methods(token);
+    ChatPostMessageRequest request = ChatPostMessageRequest.builder()
+      .channel("#chat")
+      .username(name)
+      .text(message)
+      .build();
+
+    try {
+      ChatPostMessageResponse response = methods.chatPostMessage(request);
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (SlackApiException e) {
+      e.printStackTrace();
+    }
   }
 
 }
