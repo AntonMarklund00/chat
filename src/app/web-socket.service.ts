@@ -19,6 +19,10 @@ export class WebSocketService {
     });
 
     this.webSocket.onmessage = (event => {
+      if(!event.data.startsWith('{"')) {
+        const chatMassageDtoAdmin = new ChatMessageDto("Admin", event.data);
+        this.chatMessage.push(chatMassageDtoAdmin);
+      }
       const chatMessageDto = JSON.parse(event.data);
       this.chatMessage.push(chatMessageDto);
     });

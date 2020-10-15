@@ -6,5 +6,6 @@ export class ChatMessageDto {
     this.user = user;
     this.message = message;
   }
+
 }
 
