@@ -102,7 +102,7 @@ public class ChatService {
 
     SlackConfig config = new SlackConfig();
     Slack slack = Slack.getInstance(config);
-    String token = "Token";
+    String token = "token";
     MethodsClient methods = slack.methods(token);
     ChatPostMessageRequest request = ChatPostMessageRequest.builder()
       .channel("#chat")

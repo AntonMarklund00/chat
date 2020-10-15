@@ -44,25 +44,9 @@ public class ChatApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ChatApplication.class, args);
 
-    String botToken = "Token";
-    SlackletService slackService = new SlackletService(botToken);
-    slackService.addSlacklet(new Slacklet() {
-      @Override
-      public void onMessagePosted(SlackletRequest req, SlackletResponse resp) {
-
-        // get message content
-        String content = req.getContent();
-        TextMessage message = new TextMessage(content);
-        ChatWebSocketHandler.sendMessageFromSlack(message);
-
-      }
-    });
-
-    try {
-      slackService.start();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    ChatWebSocketHandler.slack();
 
   }
+
+
 }

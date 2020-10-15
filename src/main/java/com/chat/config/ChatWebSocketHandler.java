@@ -1,6 +1,11 @@
 package com.chat.config;
 
 import com.chat.controller.ChatController;
+import com.chat.service.ChatService;
+import org.riversun.slacklet.Slacklet;
+import org.riversun.slacklet.SlackletRequest;
+import org.riversun.slacklet.SlackletResponse;
+import org.riversun.slacklet.SlackletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -14,7 +19,7 @@ import java.util.List;
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
   @Autowired
-  ChatController chatController;
+  ChatService chatService;
 
   private static final List<WebSocketSession> webSocketSessions = new ArrayList<>();
 
@@ -43,5 +48,30 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
     webSocketSessions.remove(session);
+  }
+
+
+  public static void slack(){
+    String botToken = "token";
+    SlackletService slackService = new SlackletService(botToken);
+    slackService.addSlacklet(new Slacklet() {
+      @Override
+      public void onMessagePosted(SlackletRequest req, SlackletResponse resp) {
+
+        // get message content
+        String content = req.getContent();
+        if(content.startsWith("%")){
+          String displayC = content.replace("%", "");
+          TextMessage message = new TextMessage(displayC);
+          ChatWebSocketHandler.sendMessageFromSlack(message);
+        }
+      }
+    });
+
+    try {
+      slackService.start();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
