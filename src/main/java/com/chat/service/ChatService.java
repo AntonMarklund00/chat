@@ -5,18 +5,23 @@ import com.slack.api.SlackConfig;
 import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+import com.slack.api.methods.request.rtm.RTMStartRequest;
 import com.slack.api.methods.response.chat.ChatPostMessageResponse;
-import com.slack.api.model.Message;
-import org.riversun.slacklet.Slacklet;
-import org.riversun.slacklet.SlackletRequest;
-import org.riversun.slacklet.SlackletResponse;
-import org.riversun.slacklet.SlackletService;
+import com.slack.api.methods.response.rtm.RTMStartResponse;
+import com.slack.api.model.event.UserTypingEvent;
+import com.slack.api.rtm.RTMClient;
+import com.slack.api.rtm.RTMEventHandler;
+import com.slack.api.rtm.RTMEventsDispatcher;
+import com.slack.api.rtm.RTMEventsDispatcherFactory;
+import com.slack.api.rtm.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.support.ExecutorSubscribableChannel;
 import org.springframework.stereotype.Service;
 
 import com.chat.dao.Chat;
@@ -41,10 +46,26 @@ public class ChatService {
 
 	int id;
 
-	/*
+
+  private SimpMessagingTemplate template;
+
+  @Autowired
+  public ChatService(SimpMessagingTemplate template) {
+    this.template = template;
+  }
+
+
+  /*
 	 * Post message
 	 */
-	public boolean post(String name, String message) {
+
+	public boolean post(String room, String name, String message) {
+
+    System.out.println(template.getMessageChannel());
+    this.template.convertAndSend("/message",  name + ": " + message);
+
+
+
 		Chat latestId = chatRepository.findTopByOrderByIdDesc();
 		if(latestId != null) {
 			id = latestId.getId()+1;
@@ -57,7 +78,6 @@ public class ChatService {
 
 		Chat chat = new Chat(id, name, message, formatter.format(date));
 
-    slack(name, message);
 		if(chatRepository.save(chat) != null) {
 			return true;
 		}
@@ -96,27 +116,29 @@ public class ChatService {
     return allChatPage;
   }
 
-
-
-  public void slack(String name, String message){
+  public void slack(Chat message){
 
     SlackConfig config = new SlackConfig();
     Slack slack = Slack.getInstance(config);
-    String token = "token";
+    String token = "Token";
     MethodsClient methods = slack.methods(token);
     ChatPostMessageRequest request = ChatPostMessageRequest.builder()
       .channel("#chat")
-      .username(name)
-      .text(message)
+      .username(message.getName())
+      .text(message.getMessage())
       .build();
 
     try {
-      ChatPostMessageResponse response = methods.chatPostMessage(request);
+      ChatPostMessageResponse response = slack.methods(token).chatPostMessage(req -> req
+        .channel("#chat")
+        .username(message.getName())
+        .text(message.getMessage()));
     } catch (IOException e) {
       e.printStackTrace();
     } catch (SlackApiException e) {
       e.printStackTrace();
     }
+
   }
 
 }

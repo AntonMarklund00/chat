@@ -14,8 +14,15 @@ export class ChatComponent implements OnInit {
   @ViewChild("message") message: ElementRef;
   @Input() username: string;
 
-  constructor(private http: HttpClient, public webSocketService: WebSocketService) {
-    this.getAllchat();
+  input;
+  constructor(private http: HttpClient, public messageService: WebSocketService) {}
+  sendMessage() {
+    if (this.input) {
+      this.messageService.sendMessage(this.username, this.input);
+      this.input = '';
+      //let url = "/post/" + this.username + "/" + this.message.nativeElement.value;
+      //this.http.post(url, {}).subscribe();
+    }
   }
 
   ngOnInit(): void {}
@@ -23,12 +30,6 @@ export class ChatComponent implements OnInit {
   getAllchat(){
     this.http.get('get/start').subscribe(data => this.list = data);
   }
-  newMessage(){
-    const chatMessageDto = new ChatMessageDto(this.username, this.message.nativeElement.value);
-    this.webSocketService.sendMessage(chatMessageDto);
-    let url = "/post/" + this.username + "/" + this.message.nativeElement.value;
-    this.http.post(url, {}).subscribe();
-    this.message.nativeElement.value = "";
-  }
+
 
 }

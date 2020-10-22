@@ -1,14 +1,14 @@
 package com.chat.dao;
 
 public class Chat {
-	
+
 	private int id;
 	private String name;
 	private String message;
 	private String time;
-	
+
 	public Chat() {}
-	
+
 	public Chat(int id, String name, String message, String string) {
 		super();
 		this.id = id;
@@ -17,8 +17,8 @@ public class Chat {
 		this.message = message;
 	}
 
-	
-	
+
+
 	public int getId() {
 		return id;
 	}
@@ -50,10 +50,10 @@ public class Chat {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 
 }

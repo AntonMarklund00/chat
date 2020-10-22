@@ -7,7 +7,7 @@
   <button class="btn btn-primary" (click)="newMessage()">Send</button>
 </div>-->
 
-<div class="chat_window">
+<!--<div class="chat_window">
   <div class="top_menu">
     <div class="buttons">
 
@@ -26,5 +26,12 @@
       <button (click)="newMessage()" class="btn btn-success btn-lg">Send</button>
     </div>
   </div>
-</div>
+</div>-->
 
+<input class="form-control" type="text" placeholder="message" [(ngModel)]="input">
+<button class="btn btn-success" (click)="sendMessage()">Send</button>
+<div class="content">
+  <div *ngFor="let msg of messageService.msg">
+    {{msg}}
+  </div>
+</div>
