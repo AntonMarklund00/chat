@@ -1,13 +1,13 @@
 <!--<div class="container">
   <div>
-    <p *ngFor="let startChatNessage of list"><span>{{startChatNessage.name}}</span> {{startChatNessage.message}}</p>
-    <p *ngFor="let chatMessage of webSocketService.chatMessage"><span>{{chatMessage.user}}</span> {{chatMessage.message}}</p>
+    <p *ngFor="let listMSG of list"><span>{{listMSG.name}} {{listMSG.message}}</span></p>
+    <p  *ngFor="let msg of messageService.msg><span>{{msg}}</span></p>
   </div>
-  <input type="text" #message>
-  <button class="btn btn-primary" (click)="newMessage()">Send</button>
+  <input class="form-control" type="text" placeholder="message" [(ngModel)]="input" #message>
+  <button class="btn btn-primary" (click)="sendMessage()">Send</button>
 </div>-->
 
-<!--<div class="chat_window">
+<div class="chat_window">
   <div class="top_menu">
     <div class="buttons">
 
@@ -15,23 +15,26 @@
     <div class="title">Chat</div>
   </div>
   <ul class="messages">
-    <div class="card" *ngFor="let startChatNessage of list"><div class="card-body"><strong>{{startChatNessage.name}}</strong>: {{startChatNessage.message}}</div></div>
-    <div class="card" *ngFor="let chatMessage of webSocketService.chatMessage"><div class="card-body"><strong>{{chatMessage.user}}</strong> {{chatMessage.message}}</div></div>
+    <div class="card" *ngFor="let listMSG of list"><div class="card-body">{{listMSG.name}}: {{listMSG.message}}</div></div>
+    <div class="card" *ngFor="let msg of messageService.msg"><div class="card-body">{{msg}}</div></div>
   </ul>
   <div class="bottom_wrapper clearfix">
     <div class="message_input_wrapper">
-      <input class="message_input" placeholder="Type your message here..." #message/>
+      <input type="text" class="message_input" placeholder="Type your message here..." [(ngModel)]="input" #message/>
     </div>
     <div class="send_message">
-      <button (click)="newMessage()" class="btn btn-success btn-lg">Send</button>
+      <button (click)="sendMessage()" class="btn btn-success btn-lg">Send</button>
     </div>
   </div>
-</div>-->
+</div>
 
-<input class="form-control" type="text" placeholder="message" [(ngModel)]="input">
+<!--<input class="form-control" type="text" placeholder="message" [(ngModel)]="input">
 <button class="btn btn-success" (click)="sendMessage()">Send</button>
 <div class="content">
+  <div *ngFor="let listMSG of list">
+    {{listMSG.name}}: {{listMSG.message}}
+  </div>
   <div *ngFor="let msg of messageService.msg">
     {{msg}}
   </div>
-</div>
+</div>-->

@@ -15,17 +15,19 @@ export class ChatComponent implements OnInit {
   @Input() username: string;
 
   input;
-  constructor(private http: HttpClient, public messageService: WebSocketService) {}
+  constructor(private http: HttpClient, public messageService: WebSocketService) {
+    this.getAllchat();
+  }
   sendMessage() {
     if (this.input) {
       this.messageService.sendMessage(this.username, this.input);
       this.input = '';
-      //let url = "/post/" + this.username + "/" + this.message.nativeElement.value;
-      //this.http.post(url, {}).subscribe();
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+  }
 
   getAllchat(){
     this.http.get('get/start').subscribe(data => this.list = data);

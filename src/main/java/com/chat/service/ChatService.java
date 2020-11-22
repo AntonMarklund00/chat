@@ -14,7 +14,12 @@ import com.slack.api.rtm.RTMEventHandler;
 import com.slack.api.rtm.RTMEventsDispatcher;
 import com.slack.api.rtm.RTMEventsDispatcherFactory;
 import com.slack.api.rtm.message.Message;
+import org.riversun.slacklet.Slacklet;
+import org.riversun.slacklet.SlackletRequest;
+import org.riversun.slacklet.SlackletResponse;
+import org.riversun.slacklet.SlackletService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import com.chat.dao.Chat;
 import com.chat.repository.ChatRepository;
+import org.springframework.web.socket.TextMessage;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -46,7 +52,6 @@ public class ChatService {
 
 	int id;
 
-
   private SimpMessagingTemplate template;
 
   @Autowired
@@ -54,40 +59,40 @@ public class ChatService {
     this.template = template;
   }
 
-
   /*
-	 * Post message
+	 * Post message to browser
 	 */
+	public void post(String room, String name, String message) {
 
-	public boolean post(String room, String name, String message) {
-
-    System.out.println(template.getMessageChannel());
-    this.template.convertAndSend("/message",  name + ": " + message);
-
-
-
-		Chat latestId = chatRepository.findTopByOrderByIdDesc();
-		if(latestId != null) {
-			id = latestId.getId()+1;
-		}else {
-		 id = 0;
-		}
-
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date date = new Date();
-
-		Chat chat = new Chat(id, name, message, formatter.format(date));
-
-		if(chatRepository.save(chat) != null) {
-			return true;
-		}
-
-
-		return false;
+    this.template.convertAndSend(room,  name + ": " + message);
+    postToDatabase(room, name, message);
 	}
 
 	/*
-	 * Get 5 latest chats
+	* post to database
+	* */
+	public boolean postToDatabase(String room, String name, String message){
+
+    Chat latestId = chatRepository.findTopByOrderByIdDesc();
+    if(latestId != null) {
+      id = latestId.getId()+1;
+    }else {
+      id = 0;
+    }
+
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    Date date = new Date();
+    Chat chat = new Chat(id, name, message, formatter.format(date));
+    if(chatRepository.save(chat) != null) {
+      return true;
+    }
+
+    return false;
+  }
+
+	/*
+	 * Get 5 latest messages
+	 * todo: from certain room
 	 */
 	public List<Chat> getFiveLatestChat(){
 		Pageable pageable = PageRequest.of(0, 5, Sort.by(Order.desc("id")));
@@ -103,7 +108,6 @@ public class ChatService {
     }else{
 		  chats.add(allChatArray.get(0));
     }
-
 		Collections.reverse(chats);
 		return chats;
 	}
@@ -120,7 +124,7 @@ public class ChatService {
 
     SlackConfig config = new SlackConfig();
     Slack slack = Slack.getInstance(config);
-    String token = "Token";
+    String token = "TOKEN";
     MethodsClient methods = slack.methods(token);
     ChatPostMessageRequest request = ChatPostMessageRequest.builder()
       .channel("#chat")
@@ -138,7 +142,34 @@ public class ChatService {
     } catch (SlackApiException e) {
       e.printStackTrace();
     }
+  }
 
+  @Bean
+  public void slack(){
+
+    //ChatService chatService = new ChatService();
+    String botToken = "TOKEN";
+    SlackletService slackService = new SlackletService(botToken);
+    slackService.addSlacklet(new Slacklet() {
+
+      @Override
+      public void onMessagePosted(SlackletRequest req, SlackletResponse resp) {
+
+        // get message content
+        String content = req.getContent();
+        if(content.startsWith("%")){
+          String displayC = content.replaceFirst("%", "");
+          TextMessage message = new TextMessage(displayC);
+          template.convertAndSend("/message",  "Admin" + ": " + message.getPayload());
+          postToDatabase("/message", "Admin", message.getPayload());
+        }
+      }
+    });
+    try {
+      slackService.start();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }
