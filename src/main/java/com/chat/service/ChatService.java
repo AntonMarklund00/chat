@@ -62,10 +62,10 @@ public class ChatService {
   /*
 	 * Post message to browser
 	 */
-	public void post(String room, String name, String message) {
-
-    this.template.convertAndSend(room,  name + ": " + message);
-    postToDatabase(room, name, message);
+	public void post(String room, Chat message) {
+    this.template.convertAndSend(room,  message.getName() + ": " + message.getMessage());
+    slack(message);
+    postToDatabase(room, message.getMessage(), message.getMessage());
 	}
 
 	/*
@@ -112,14 +112,6 @@ public class ChatService {
 		return chats;
 	}
 
-  public List<Chat> getAllChat(){
-
-    //last 5 chats
-    List<Chat> allChatPage = chatRepository.findAll();
-
-    return allChatPage;
-  }
-
   public void slack(Chat message){
 
     SlackConfig config = new SlackConfig();
@@ -145,7 +137,7 @@ public class ChatService {
   }
 
   @Bean
-  public void slack(){
+  public void getMessageFromSlack(){
 
     //ChatService chatService = new ChatService();
     String botToken = "TOKEN";

@@ -18,8 +18,7 @@ public class ChatController {
 
   @MessageMapping("/send/message/")
   public void sendMessage(@Payload Chat message){
-    chatService.slack(message);
-    chatService.post("/message", message.getName(), message.getMessage());
+    chatService.post("/message", message);
   }
 
 
