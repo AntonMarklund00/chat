@@ -47,11 +47,6 @@ public class ChatService {
 	@Autowired
 	ChatRepository chatRepository;
 
-	@Autowired
-	HttpSession session;
-
-	int id;
-
   private SimpMessagingTemplate template;
 
   @Autowired
@@ -59,20 +54,10 @@ public class ChatService {
     this.template = template;
   }
 
-  /*
-	 * Post message to browser
-	 */
-	public void post(String room, Chat message) {
-    this.template.convertAndSend(room,  message.getName() + ": " + message.getMessage());
-    slack(message);
-    postToDatabase(room, message.getMessage(), message.getMessage());
-	}
 
-	/*
-	* post to database
-	* */
-	public boolean postToDatabase(String room, String name, String message){
 
+  public int getID(){
+    int id;
     Chat latestId = chatRepository.findTopByOrderByIdDesc();
     if(latestId != null) {
       id = latestId.getId()+1;
@@ -80,13 +65,32 @@ public class ChatService {
       id = 0;
     }
 
+    return id;
+  }
+
+  public String getDate(){
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     Date date = new Date();
-    Chat chat = new Chat(id, name, message, formatter.format(date));
+    return formatter.format(date);
+  }
+  /*
+	 * Post message to browser
+	 */
+	public void post(Chat message) {
+    Chat chat = new Chat(getID(), message.getName(), message.getMessage(), getDate(), message.getRoom());
+
+    this.template.convertAndSend(message.getRoom(),  chat);
+    slack(message);
+    postToDatabase(chat);
+	}
+
+	/*
+	* post to database
+	* */
+	public boolean postToDatabase(Chat chat){
     if(chatRepository.save(chat) != null) {
       return true;
     }
-
     return false;
   }
 
@@ -116,7 +120,7 @@ public class ChatService {
 
     SlackConfig config = new SlackConfig();
     Slack slack = Slack.getInstance(config);
-    String token = "TOKEN";
+    String token = "BOT-TOKEN";
     MethodsClient methods = slack.methods(token);
     ChatPostMessageRequest request = ChatPostMessageRequest.builder()
       .channel("#chat")
@@ -140,7 +144,7 @@ public class ChatService {
   public void getMessageFromSlack(){
 
     //ChatService chatService = new ChatService();
-    String botToken = "TOKEN";
+    String botToken = "BOT-TOKEN";
     SlackletService slackService = new SlackletService(botToken);
     slackService.addSlacklet(new Slacklet() {
 
@@ -152,8 +156,9 @@ public class ChatService {
         if(content.startsWith("%")){
           String displayC = content.replaceFirst("%", "");
           TextMessage message = new TextMessage(displayC);
-          template.convertAndSend("/message",  "Admin" + ": " + message.getPayload());
-          postToDatabase("/message", "Admin", message.getPayload());
+          Chat chat = new Chat(getID(), "Admin", message.getPayload(), getDate(), "/123");
+          template.convertAndSend("/123",  chat);
+          postToDatabase(chat);
         }
       }
     });

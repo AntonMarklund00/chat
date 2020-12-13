@@ -13,19 +13,20 @@ export class ChatComponent implements OnInit {
   list: any;
   @ViewChild("message") message: ElementRef;
   @Input() username: string;
-
+  sesList:ChatMessageDto[] = this.messageService.msg;
   input;
   constructor(private http: HttpClient, public messageService: WebSocketService) {
     this.getAllchat();
+
   }
   sendMessage() {
     if (this.input) {
-      this.messageService.sendMessage(this.username, this.input);
+      this.messageService.sendMessage(this.username, this.input, sessionStorage.getItem("room"));
       this.input = '';
     }
   }
-
   ngOnInit(): void {
+    this.messageService.initializeWebSocketConnection();
 
   }
 

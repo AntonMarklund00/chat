@@ -18,7 +18,7 @@ public class ChatController {
 
   @MessageMapping("/send/message/")
   public void sendMessage(@Payload Chat message){
-    chatService.post("/message", message);
+    chatService.post(message);
   }
 
 

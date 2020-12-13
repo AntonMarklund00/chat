@@ -6,15 +6,17 @@ public class Chat {
 	private String name;
 	private String message;
 	private String time;
+	private String room;
 
 	public Chat() {}
 
-	public Chat(int id, String name, String message, String string) {
+	public Chat(int id, String name, String message, String string, String room) {
 		super();
 		this.id = id;
 		this.time = string;
 		this.name = name;
 		this.message = message;
+		this.room = room;
 	}
 
 
@@ -51,9 +53,7 @@ public class Chat {
 		this.message = message;
 	}
 
+  public String getRoom() { return room; }
 
-
-
-
-
+  public void setRoom(String room) { this.room = room; }
 }
